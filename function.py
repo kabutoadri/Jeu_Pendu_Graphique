@@ -1,17 +1,19 @@
-#Auteur : Adriano Alves Morais, Kodjo Attivon
+#Auteur : Adriano Alves Morais, Marc Schilter
 #Date : 16.09.2025
 #Présentation du programme : Fichier Fonction pour le programme du jeu du pendu
 
-
-def mots_aleatoires(aleatoire,lettre, vide):
+#Fonction mot aléatoire
+def mots_aleatoires(aleatoire,lettre):
     listes = ["python", "ordinateur", "jeu", "random", "chat", "chien", "soleil", "lune", "code", "apprentissage"]
 
     mot_mystere = list(listes[aleatoire].upper())
 
-    if vide == "":
+    if lettre == "":
         mot_affiche = ["_ "] * len(mot_mystere)
+        print("oui")
     else:
-        mot_affiche = vide
+        mot_affiche = lettre
+        print("non")
 
     for i, char in enumerate(mot_mystere):
          if char == lettre:

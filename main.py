@@ -1,24 +1,38 @@
-#Auteur : Adriano Alves Morais, Kodjo Attivon
-#Date : 16.09.2025
+#Auteur : Adriano Alves Morais, Marc Schilter
+#Date : 15.12.2025
 #Présentation du programme : Programme principal du jeu du pendu
 
 import random
 import function
+import tkinter as tk
 
 #Déclaration et initialisation des variables
 erreur = 0
 stockage = ""
-lettre = ""
 game = True
 rejouer = ""
 
 numero_random = random.randint(0,9)
 max_erreur = function.dessiner_pendu(erreur)[0] #Récuperation de la taille du pendu
-mot_visible = function.mots_aleatoires(numero_random, lettre, stockage)[0] #Récuperation du mot aléatoire
+#mot_visible = function.mots_aleatoires(numero_random, lettre, stockage)[0] #Récuperation du mot aléatoire
+
+root = tk.Tk()
+root.title("Pendu")
 
 #Début du JEU
-print("\nBienvenue au jeu de Pendu ! \n\nnous allons vous sélectionner un mot aléatoire\n")
-print(" ".join(function.mots_aleatoires(numero_random, lettre, stockage)[1]), "\n")
+frame_User_Entry = tk.Frame(root)
+frame_User_Entry.pack(side="top")
+label_Instruction = tk.Label(frame_User_Entry, text="Choisis une lettre :")
+label_Instruction.grid(row=0, column=0)
+entry_Lettre = tk.Entry(frame_User_Entry)
+entry_Lettre.grid(row=0, column=1)
+label_Lettres = tk.Label(root, text=f"{" ".join(function.mots_aleatoires(numero_random, entry_Lettre.get().upper())[1])}")
+label_Lettres.pack(side="top")
+entry_Lettre.bind("<Return>", label_Lettres.config(text=f"{" ".join(function.mots_aleatoires(numero_random, entry_Lettre.get().upper())[1])}"))
+
+root.mainloop()
+
+
 
 while game:
     lettre = input("Choisis une lettre :\n").upper()
