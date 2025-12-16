@@ -2,19 +2,37 @@
 #Date : 15.12.2025
 #Présentation du programme : Programme principal du jeu du pendu
 
+#importation de librairie
 import random
-import function
 import tkinter as tk
 
-#Déclaration et initialisation des variables
-erreur = 0
-stockage = ""
-game = True
-rejouer = ""
+#######################################################################################################################
+#Fonction mot aléatoire
+def mots_aleatoires(index,lettre, proposition_vide):
+    listes_mots = ["python", "ordinateur", "jeu", "random", "chat", "chien", "soleil", "lune", "code", "apprentissage"]
 
+    mot_mystere = list(listes_mots[index].upper())
+
+    if proposition_vide == "":
+        affichage_mot = ["_"] * len(mot_mystere)
+    else:
+        affichage_mot = proposition_vide
+
+    for i, char in enumerate(mot_mystere):
+         if char == lettre:
+            affichage_mot[i] = lettre
+
+    return mot_mystere, affichage_mot
+#######################################################################################################################
+
+#initialisation des variables
+erreur = 0
+lettre_choisi = ""
 numero_random = random.randint(0,9)
-max_erreur = function.dessiner_pendu(erreur)[0] #Récuperation de la taille du pendu
-#mot_visible = function.mots_aleatoires(numero_random, lettre, stockage)[0] #Récuperation du mot aléatoire
+stockage = mots_aleatoires(numero_random, "", "")[1]
+
+#max_erreur = function.dessiner_pendu(erreur)[0] #Récuperation de la taille du pendu
+mot_visible = mots_aleatoires(numero_random, lettre_choisi, stockage)[0] #Récuperation du mot aléatoire
 
 root = tk.Tk()
 root.title("Pendu")
@@ -22,53 +40,37 @@ root.title("Pendu")
 #Début du JEU
 frame_User_Entry = tk.Frame(root)
 frame_User_Entry.pack(side="top")
+
 label_Instruction = tk.Label(frame_User_Entry, text="Choisis une lettre :")
 label_Instruction.grid(row=0, column=0)
+
 entry_Lettre = tk.Entry(frame_User_Entry)
 entry_Lettre.grid(row=0, column=1)
-label_Lettres = tk.Label(root, text=f"{" ".join(function.mots_aleatoires(numero_random, entry_Lettre.get().upper())[1])}")
+entry_Lettre.focus()
+
+label_Lettres = tk.Label(root, text=f"{" ".join(stockage)}")
 label_Lettres.pack(side="top")
-entry_Lettre.bind("<Return>", label_Lettres.config(text=f"{" ".join(function.mots_aleatoires(numero_random, entry_Lettre.get().upper())[1])}"))
+
+#controle des proposition
+def proposition(event):
+    global erreur, stockage, lettre_choisi
+
+    #stocke la lettre majuscule de la saisie et le supprime
+    lettre_choisi = entry_Lettre.get().strip().upper()
+    entry_Lettre.delete(0, tk.END)
+
+    #controle que la proposition soit une seule lettre et pas de chiffre
+    if len(lettre_choisi) != 1 or not lettre_choisi.isalpha():
+        return
+
+    #affiche le pendu si la proposition est fausse
+    if lettre_choisi not in str(mot_visible):
+        erreur += 1
+
+    #stocke et affiche les traits avec la bonne lettre si besoin
+    stockage = mots_aleatoires(numero_random, lettre_choisi, stockage)[1]
+    label_Lettres.config(text=" ".join(stockage))
+
+entry_Lettre.bind("<Return>", proposition)
 
 root.mainloop()
-
-
-
-while game:
-    lettre = input("Choisis une lettre :\n").upper()
-    #La lettre est bonne ?
-    if lettre in str(mot_visible):
-        stockage = function.mots_aleatoires(numero_random, lettre, stockage)[1] #affiche la bonne lettre
-    else:
-        print("Dommage, ce n'est pas la bonne lettre...\n")
-        erreur += 1
-        print(function.dessiner_pendu(erreur)[1])  #affiche l'erreur
-    print(" ".join(stockage))
-
-    #Fin de la partie
-    if erreur == max_erreur or stockage == mot_visible:
-        if erreur == max_erreur:
-            print("\nGAME OVER !\n")
-        else:
-            print("\nWIN !\n")
-
-        #Choix de l'utilisateur pour quitter ou rejouer
-        rejouer = input("Voulez-vous rejouez ? (Y/N) : ").upper()
-        while rejouer not in ["Y", "N"]:
-            print("Ouupss... Mauvaise touche... Merci d'appuyer sur Y ou N.\n")
-            rejouer = input("Voulez-vous rejouez ? (Y/N) : ").upper()
-
-        #Quitter ou non ?
-        if rejouer == "N":
-            game = False
-            print("\nMerci d'avoir joué et à la prochaine !\n")
-        else:
-            #Réinitialisation du jeu
-            erreur = 0
-            stockage = ""
-            lettre = ""
-            numero_random = random.randint(0, 9)
-            mot_visible = function.mots_aleatoires(numero_random, lettre, stockage)[0]
-            rejouer = ""
-            print("\nVous rejouez ? Parfait ! \n\nnous allons vous sélectionner un nouveau mot aléatoire\n")
-            print(" ".join(function.mots_aleatoires(numero_random, lettre, stockage)[1]), "\n")
