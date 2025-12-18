@@ -1,10 +1,11 @@
 #Auteur : Adriano Alves Morais, Marc Schilter
 #Date : 15.12.2025
-#Présentation du programme : Programme principal du jeu du pendu
+#Présentation du programme : Programme du jeu du pendu en interface graphique
 
 #importation de librairie
 import random
 import tkinter as tk
+from PIL import Image, ImageTk  # Pillow
 
 #######################################################################################################################
 #Fonction mot aléatoire
@@ -23,6 +24,27 @@ def mots_aleatoires(index,lettre, proposition_vide):
             affichage_mot[i] = lettre
 
     return mot_mystere, affichage_mot
+#######################################################################################################################
+# Fonction image pendu (JPG)
+def dessiner_pendu(erreur):
+    etapes_pendu = [
+        "img_pendu/Pendu_1.jpg",
+        "img_pendu/Pendu_2.jpg",
+        "img_pendu/Pendu_3.jpg",
+        "img_pendu/Pendu_4.jpg",
+        "img_pendu/Pendu_5.jpg",
+        "img_pendu/Pendu_6.jpg",
+        "img_pendu/Pendu_7.jpg",
+        "img_pendu/Pendu_8.jpg",
+        "img_pendu/Pendu_9.jpg",
+        "img_pendu/Pendu_10.jpg",
+        "img_pendu/Pendu_11.jpg"
+    ]
+
+    max_erreur = len(etapes_pendu)
+    idx = min(erreur, max_erreur - 1)  # évite de dépasser la dernière image
+    return max_erreur, etapes_pendu[idx]
+
 #######################################################################################################################
 
 #initialisation des variables
@@ -72,5 +94,37 @@ def proposition(event):
     label_Lettres.config(text=" ".join(stockage))
 
 entry_Lettre.bind("<Return>", proposition)
+
+#######################################################################################################################
+# Frame du pendu (image) placé EN BAS avec place
+frame_Pendu = tk.Frame(root, width=280, height=280, bd=2, relief="groove")
+frame_Pendu.place(relx=0.5, rely=1.0, anchor="s", y=-130)
+
+label_Pendu = tk.Label(frame_Pendu)
+label_Pendu.place(relx=0.5, rely=0.5, anchor="center")
+
+photo_pendu = None  # référence (IMPORTANT)
+
+def update_pendu():
+    """Charge et affiche l'image JPG correspondant à l'erreur actuelle."""
+    global photo_pendu
+
+    _, image_path = dessiner_pendu(erreur)
+
+    # Ouvre l'image (JPG) avec Pillow
+    img = Image.open(image_path)
+
+    # Redimensionne pour qu'elle rentre dans le frame (optionnel mais conseillé)
+    # Ici: 260x260 (tu peux ajuster)
+    img = img.resize((260, 260), Image.Resampling.LANCZOS)
+
+    # Convertit en image Tkinter
+    photo_pendu = ImageTk.PhotoImage(img)
+
+    # Affiche
+    label_Pendu.config(image=photo_pendu)
+
+# image initiale
+update_pendu()
 
 root.mainloop()
