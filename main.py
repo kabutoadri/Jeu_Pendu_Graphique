@@ -217,8 +217,16 @@ def show_end_popup(is_win: bool):
 def proposal(event):
     global mistake, storage, choice_letter, used_letter
 
-    choice_letter = entry_letter.get().strip().upper()
-    entry_letter.delete(0, tk.END)
+    choice_letter = entry_letter.get().strip().upper()  # Récupère la lettre saisie
+    entry_letter.delete(0, tk.END)  # Efface la saisie après validation
+
+    if len(choice_letter) != 1:
+        if list(choice_letter) == visible_word:
+            # Met à jour l'affichage du mot
+            label_letter.config(text=" ".join(choice_letter))
+            #popup victoire
+            show_end_popup(is_win=True)
+            return
 
     # Contrôle : 1 lettre alpha
     if len(choice_letter) != 1 or not choice_letter.isalpha():
