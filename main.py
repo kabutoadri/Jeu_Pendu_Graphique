@@ -184,7 +184,7 @@ def show_end_popup(is_win: bool):
     top = tk.Toplevel(root)
     top.title(title)
     top.configure(bg=bg_color)
-    top.geometry(f"320x170+{position_x + 90}+{position_y + 120}")
+    top.geometry(f"320x170+{position_x + 115}+{position_y + 220}")
     top.transient(root)
     # Évite les interactions avec la fenêtre principale
     top.grab_set()
