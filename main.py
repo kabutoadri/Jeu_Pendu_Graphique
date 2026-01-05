@@ -8,9 +8,8 @@ from PIL import Image, ImageTk  # Pillow
 
 #######################################################################################################################
 # Fonction mot aléatoire
-def mots_aleatoires(index, lettre, proposition_vide):
-    #listes_mots = ["python", "ordinateur", "jeu", "random", "chat", "chien", "soleil", "lune", "code", "apprentissage"]
-    dict_mots = {"python": "Langage utilisé pour créer le jeu",
+def random_words(index, letter, empty_proposal):
+    dict_words = {"python": "Langage utilisé pour créer le jeu",
                  "ordinateur": "Utilisé pour lancer le jeu",
                  "jeu":"Qu'est-ce qu'un Pendu?",
                  "random":"1, 4, 2, 5, 3, ...",
@@ -21,26 +20,25 @@ def mots_aleatoires(index, lettre, proposition_vide):
                  "code": "Programmation",
                  "apprentissage": "CPNV"
                  }
-    listes_index = list(dict_mots.keys())
+    index_list = list(dict_words.keys())
 
-    mot_mystere = list(listes_index[index].upper())
-    #mot_mystere = list(listes_mots[index].upper())
+    mystery_word = list(index_list[index].upper())
 
-    if proposition_vide == "":
-        affichage_mot = ["_"] * len(mot_mystere)
+    if empty_proposal == "":
+        display_word = ["_"] * len(mystery_word)
     else:
-        affichage_mot = proposition_vide
+        display_word = empty_proposal
 
-    for i, char in enumerate(mot_mystere):
-        if char == lettre:
-            affichage_mot[i] = lettre
+    for i, char in enumerate(mystery_word):
+        if char == letter:
+            display_word[i] = letter
 
-    return mot_mystere, affichage_mot, dict_mots[listes_index[index]]
+    return mystery_word, display_word, dict_words[index_list[index]]
 
 #######################################################################################################################
 # Fonction image pendu (JPG)
-def dessiner_pendu(erreur):
-    etapes_pendu = [
+def draw_pendu(mistake):
+    stage_pendu = [
         "img_pendu/Pendu_1.jpg",
         "img_pendu/Pendu_2.jpg",
         "img_pendu/Pendu_3.jpg",
@@ -54,20 +52,20 @@ def dessiner_pendu(erreur):
         "img_pendu/Pendu_11.jpg"
     ]
 
-    max_erreur = len(etapes_pendu)
-    idx = min(erreur, max_erreur - 1)  # évite de dépasser la dernière image
-    return max_erreur, etapes_pendu[idx]
+    mistake_max = len(stage_pendu)
+    idx = min(mistake, mistake_max - 1)  # évite de dépasser la dernière image
+    return mistake_max, stage_pendu[idx]
 
 #######################################################################################################################
 # Initialisation des variables
-erreur = 0
-lettre_choisi = ""
-numero_random = random.randint(0, 9)
-stockage = mots_aleatoires(numero_random, "", "")[1]
-mot_visible = mots_aleatoires(numero_random, lettre_choisi, stockage)[0]  # mot aléatoire (liste de lettres)
-indice = mots_aleatoires(numero_random, lettre_choisi, stockage)[2]
-lettres_utilisees = [] # liste des lettres déjà proposées
-message_indice = "Passe ta souris ici pour l'indice"
+mistake = 0
+choice_letter = ""
+random_numero = random.randint(0, 9)
+storage = random_words(random_numero, "", "")[1]
+visible_word = random_words(random_numero, choice_letter, storage)[0]  # mot aléatoire (liste de lettres)
+hint = random_words(random_numero, choice_letter, storage)[2]
+used_letter = [] # liste des lettres déjà proposées
+hint_message = "Passe ta souris ici pour l'indice"
 
 #######################################################################################################################
 # Paramètre de la fenêtre
@@ -75,14 +73,14 @@ window_width = 550
 window_height = 750
 bg_color= "#f0f8ff"
 text_color = "#333333"
-titre_color = "#ff69b4"
-cacher_color = "#00bfff"
+title_color = "#ff69b4"
+hidden_color = "#00bfff"
 highlight_color = "#ff4d4d"
-utiliser_color = "#ff4500"
-font_titre = ("Comic Sans MS", 20, "bold")
+used_color = "#ff4500"
+font_title = ("Comic Sans MS", 20, "bold")
 font_text = ("Comic Sans MS", 14)
 font_entry = ("Comic Sans MS", 16, "bold")
-font_cacher = ("Courier New", 24, "bold")
+font_hidden = ("Courier New", 24, "bold")
 
 #######################################################################################################################
 # Tkinter
@@ -101,38 +99,38 @@ root.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
 
 #######################################################################################################################
 # Titre
-label_titre = tk.Label(root, text="Jeu du Pendu", bg=bg_color, font=font_titre, fg=titre_color)
-label_titre.pack(side="top", pady=10)
+label_title = tk.Label(root, text="Jeu du Pendu", bg=bg_color, font=font_title, fg=title_color)
+label_title.pack(side="top", pady=10)
 
 # Zone saisie utilisateur
-frame_User_Entry = tk.Frame(root, bg=bg_color)
-frame_User_Entry.pack(side="top", pady=10)
+frame_user_entry = tk.Frame(root, bg=bg_color)
+frame_user_entry.pack(side="top", pady=10)
 
-label_Instruction = tk.Label(frame_User_Entry, text="Choisis une lettre :", bg=bg_color, font=font_text, fg=text_color)
-label_Instruction.grid(row=0, column=0, padx=5)
+label_instruction = tk.Label(frame_user_entry, text="Choisis une lettre :", bg=bg_color, font=font_text, fg=text_color)
+label_instruction.grid(row=0, column=0, padx=5)
 
-entry_Lettre = tk.Entry(frame_User_Entry, width=10, font=font_entry, fg=text_color)
-entry_Lettre.grid(row=0, column=1, padx=5)
-entry_Lettre.focus()
+entry_letter = tk.Entry(frame_user_entry, width=10, font=font_entry, fg=text_color)
+entry_letter.grid(row=0, column=1, padx=5)
+entry_letter.focus()
 
-label_Lettres = tk.Label(root, text=" ".join(stockage), font=font_cacher, bg=bg_color, fg=cacher_color)
-label_Lettres.pack(side="top", pady=10)
+label_letter = tk.Label(root, text=" ".join(storage), font=font_hidden, bg=bg_color, fg=hidden_color)
+label_letter.pack(side="top", pady=10)
 
 # Lettres déjà utiisées
-label_Utiliser = tk.Label(root, text="Lettres déjà utilisées : ", bg=bg_color, font=font_text, fg=utiliser_color)
-label_Utiliser.pack(side="top", pady=50)
+label_used_letter = tk.Label(root, text="Lettres déjà utilisées : ", bg=bg_color, font=font_text, fg=used_color)
+label_used_letter.pack(side="top", pady=50)
 
 # indices
-label_Indice = tk.Label(root, text=message_indice, width=len(message_indice), bg=bg_color, font=font_text, fg=text_color)
-label_Indice.pack(side="bottom", pady=40)
+label_hint = tk.Label(root, text=hint_message, width=len(hint_message), bg=bg_color, font=font_text, fg=text_color)
+label_hint.pack(side="bottom", pady=40)
 
 #######################################################################################################################
 # Frame du pendu (image) placé EN BAS avec place
-frame_Pendu = tk.Frame(root, width=280, height=280, bd=2, relief="groove", bg=bg_color)
-frame_Pendu.place(relx=0.5, rely=1.0, anchor="s", y=-130)
+frame_pendu = tk.Frame(root, width=280, height=280, bd=2, relief="groove", bg=bg_color)
+frame_pendu.place(relx=0.5, rely=1.0, anchor="s", y=-130)
 
-label_Pendu = tk.Label(frame_Pendu, bg=bg_color, fg=text_color)
-label_Pendu.place(relx=0.5, rely=0.5, anchor="center")
+label_pendu = tk.Label(frame_pendu, bg=bg_color, fg=text_color)
+label_pendu.place(relx=0.5, rely=0.5, anchor="center")
 
 photo_pendu = None  # référence (IMPORTANT)
 
@@ -140,13 +138,13 @@ def update_pendu():
     """Charge et affiche l'image JPG correspondant à l'erreur actuelle."""
     global photo_pendu
 
-    _, image_path = dessiner_pendu(erreur)
+    _, image_path = draw_pendu(mistake)
 
     img = Image.open(image_path)
     img = img.resize((260, 260), Image.Resampling.LANCZOS)
 
     photo_pendu = ImageTk.PhotoImage(img)
-    label_Pendu.config(image=photo_pendu)
+    label_pendu.config(image=photo_pendu)
 
 # Image initiale
 update_pendu()
@@ -155,26 +153,26 @@ update_pendu()
 # Reset complet de la partie
 def reset_game():
     """Réinitialise la partie: erreur=0, nouveau mot, stockage reset, labels + image."""
-    global erreur, lettre_choisi, numero_random, stockage, mot_visible, lettres_utilisees
+    global mistake, choice_letter, random_numero, storage, visible_word, used_letter
 
-    erreur = 0
-    lettre_choisi = ""
-    lettres_utilisees = []
-    label_Utiliser.config(text="Lettres déjà utilisées : ")
+    mistake = 0
+    choice_letter = ""
+    used_letter = []
+    label_used_letter.config(text="Lettres déjà utilisées : ")
 
     # Choisir un autre mot (différent si possible)
-    ancien_index = numero_random
-    numero_random = random.randint(0, 9)
-    if numero_random == ancien_index:
-        numero_random = (numero_random + 1) % 10
+    old_index = random_numero
+    random_numero = random.randint(0, 9)
+    if random_numero == old_index:
+        random_numero = (random_numero + 1) % 10
 
-    stockage = mots_aleatoires(numero_random, "", "")[1]
-    mot_visible = mots_aleatoires(numero_random, "", stockage)[0]
+    storage = random_words(random_numero, "", "")[1]
+    visible_word = random_words(random_numero, "", storage)[0]
 
-    label_Lettres.config(text=" ".join(stockage))
+    label_letter.config(text=" ".join(storage))
     update_pendu()
-    entry_Lettre.delete(0, tk.END)
-    entry_Lettre.focus()
+    entry_letter.delete(0, tk.END)
+    entry_letter.focus()
 
 #######################################################################################################################
 # Popup générique (Win / Lose)
@@ -197,70 +195,70 @@ def show_end_popup(is_win: bool):
 
     #Afficher le mot si défaite
     if not is_win:
-        mot_str = "".join(mot_visible)
-        lbl_mot = tk.Label(top, text=f"Le mot était : {mot_str}", font=("Arial", 12), bg=bg_color)
-        lbl_mot.pack(side="top", pady=5)
+        word_str = "".join(visible_word)
+        lbl_word = tk.Label(top, text=f"Le mot était : {word_str}", font=("Arial", 12), bg=bg_color)
+        lbl_word.pack(side="top", pady=5)
 
     frame_btn = tk.Frame(top, bg=bg_color)
     frame_btn.pack(side="bottom", pady=12)
 
-    def recommencer_et_fermer():
+    def restart_and_quit():
         reset_game()
         top.destroy()
 
-    btn_relance = tk.Button(frame_btn, text="Rejouer", command=recommencer_et_fermer, font=font_text, bg=cacher_color, fg="white", width=10)
-    btn_relance.grid(row=0, column=0, padx=6)
+    btn_restart = tk.Button(frame_btn, text="Rejouer", command=restart_and_quit, font=font_text, bg=hidden_color, fg="white", width=10)
+    btn_restart.grid(row=0, column=0, padx=6)
 
     btn_quit = tk.Button(frame_btn, text="Quitter", command=root.quit, font=font_text, bg=highlight_color, fg="white", width=10)
     btn_quit.grid(row=0, column=1, padx=6)
 
 #######################################################################################################################
 # Contrôle des propositions
-def proposition(event):
-    global erreur, stockage, lettre_choisi, lettres_utilisees
+def proposal(event):
+    global mistake, storage, choice_letter, used_letter
 
-    lettre_choisi = entry_Lettre.get().strip().upper()
-    entry_Lettre.delete(0, tk.END)
+    choice_letter = entry_letter.get().strip().upper()
+    entry_letter.delete(0, tk.END)
 
     # Contrôle : 1 lettre alpha
-    if len(lettre_choisi) != 1 or not lettre_choisi.isalpha():
+    if len(choice_letter) != 1 or not choice_letter.isalpha():
         return
 
     # Mauvaise lettre => erreur + update image et lettres utilisées
-    if (lettre_choisi not in mot_visible) and (lettre_choisi not in lettres_utilisees):
-        erreur += 1
-        lettres_utilisees.append(lettre_choisi)
-        label_Utiliser.config(text="Lettres déjà utilisées : " + " ".join(lettres_utilisees))
+    if (choice_letter not in visible_word) and (choice_letter not in used_letter):
+        mistake += 1
+        used_letter.append(choice_letter)
+        label_used_letter.config(text="Lettres déjà utilisées : " + " ".join(used_letter))
         update_pendu()
 
     # Met à jour l'affichage du mot
-    stockage = mots_aleatoires(numero_random, lettre_choisi, stockage)[1]
-    label_Lettres.config(text=" ".join(stockage))
+    storage = random_words(random_numero, choice_letter, storage)[1]
+    label_letter.config(text=" ".join(storage))
 
     # Récupère le max d'erreurs autorisées (nombre d'images)
-    max_erreur, _ = dessiner_pendu(erreur)
+    mistake_max, _ = draw_pendu(mistake)
 
     # Victoire
-    if stockage == mot_visible:
+    if storage == visible_word:
         show_end_popup(is_win=True)
         return
 
     # Défaite (dernière image atteinte)
     # Avec 11 images, on autorise erreur = 0..10 (10 mauvaises lettres)
-    if erreur >= max_erreur - 1:
+    if mistake >= mistake_max - 1:
         show_end_popup(is_win=False)
         return
 
-def survol_label(event):
-    label_Indice.config(text="indice: " + indice)
+def hover_label(event):
+    label_hint.config(text="indice: " + hint)
 
-def quitter_label(event):
-    label_Indice.config(text=message_indice)
+def quit_label(event):
+    label_hint.config(text=hint_message)
 
 # bind pour la gestion des événements
-label_Indice.bind("<Enter>", survol_label)
-label_Indice.bind("<Leave>", quitter_label)
-entry_Lettre.bind("<Return>", proposition)
+label_hint.bind("<Enter>", hover_label)
+label_hint.bind("<Leave>", quit_label)
+entry_letter.bind("<Return>", proposal)
 
 #######################################################################################################################
 root.mainloop()
