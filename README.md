@@ -19,8 +19,11 @@ Jeux du Pendu en interface graphique
     programme, il est nécéssaire d'installer le package Pillow afin d'afficher les états du pendu.
 
 ### Sources identifiées
-    github.com
-    w3schools.com
-    chatgpt.com
+    https://github.com/kabutoadri/Jeu_Pendu_Graphique
+    https://www.w3schools.com/python/ref_module_tkinter.asp
     https://stackoverflow.com/questions/57451177/python3-create-list-of-image-in-a-folder
     https://stackoverflow.com/questions/37687485/how-to-add-images-into-a-list
+    https://moodle.eduvaud.ch/pluginfile.php/22428/mod_resource/content/1/cours-base_tkinter.pdf
+    https://moodle.eduvaud.ch/pluginfile.php/22429/mod_resource/content/1/tkinterDoc.pdf
+    https://moodle.eduvaud.ch/pluginfile.php/22431/mod_resource/content/7/introTK.pdf
+    chatgpt.com
